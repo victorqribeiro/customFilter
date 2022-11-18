@@ -1,0 +1,231 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: "Lucida Console", "Courier New", monospace;
+  user-select: none;
+}
+
+#header {
+  grid-area: header;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  overflow: auto;
+}
+
+#header > div {
+  display: flex;
+}
+
+#header > div > * {
+  margin-right: 0.5em;
+}
+
+#status {
+  display: flex;
+}
+
+#menu {
+  grid-area: menu;
+  text-align: center;
+  overflow: auto;
+}
+
+#menu > * {
+  margin: 0.5em;
+}
+
+#canvas-area {
+  grid-area: canvas;
+  overflow: auto;
+}
+
+#filter {
+  width: 7.5em;
+  margin: auto;
+}
+
+#filter-area input[type='number'] {
+  width: 50px;
+  height: 50px;
+  padding: 0;
+}
+
+#new-area > input[type='number']::placeholder {
+  top: 1em;
+}
+
+#stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#new-area input[type="number"], #animation-area input[type="number"] {
+  min-width: 4.5em;
+}
+
+#load-area input[type="number"] {
+  min-width: 4em;
+}
+
+#paint-area button {
+  min-width: 3em;
+  margin: 0.1em;
+}
+
+#filter-area button, #stack-area button {
+  min-width: 3em;
+  margin: 0.1em;
+}
+
+#transform-area button {
+  min-width: 4em;
+  margin: 0.1em;
+}
+
+#blend-area {
+  display: flex;
+  flex-direction: row;
+}
+
+#adjust-area button, #adjust-area select, #animation-area button {
+  min-width: 6em;
+  margin: 0.1em;
+}
+
+#color {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+#color > #sliders {
+  display: flex;
+  flex-direction: column; 
+}
+
+#dropper {
+  width: 50px;
+  height: 50px;
+  background-color: rgb(0, 0, 0);
+}
+
+#canvas-tools {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#canvas-bg {
+  margin: 0 auto;
+  position: relative;
+}
+
+canvas {
+  position: absolute;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-areas: 'header header' 'menu canvas';
+  grid-template-rows: auto 1fr;
+  grid-template-columns: minmax(auto, 20em) 1fr;
+  gap: 10px;
+  background-color: #EEE;
+  padding: 0.2em;
+  height: 100%;
+}
+
+.selected {
+  border: solid 1px red;
+}
+
+.accordion > div:first-child {
+  text-align: left;
+  cursor: pointer;
+}
+
+.accordion > div:first-child {
+  font-size: 1em;
+}
+
+.accordion > div:first-child > span:first-child::before {
+  content: '[';
+}
+
+.accordion > div:first-child > span:first-child::after {
+  content: ']';
+}
+
+.accordion > div:last-child {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  padding: 0.2em;
+}
+
+.icon {
+  font-size: 1.8em;
+  font-family: monospace;
+}
+
+img.raw {
+  outline: 2px solid gray;
+  outline-offset: -2px;
+}
+
+button {
+  padding: 0.5em;
+  font-size: 1.2em;
+}
+
+input[type="number"] {
+  width: 2.5em;
+  font-size: 1.2em;
+  padding: 0.5em;
+  text-align: center;
+}
+
+input[type="text"], select {
+  font-size: 1.2em;
+  padding: 0.5em;
+  min-width: 6em;
+  max-width: 100%;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+label {
+  position: relative;
+}
+
+output {
+  position: absolute;
+  margin-left: 3.5em;
+}
+
+input[type="range"] {
+  position: relative;
+  height: 2em;
+  width: 9em;
+  margin-top: 0.8em;
+}
+
+@media only screen and (max-width: 600px) {
+
+  .grid-container {
+    display: grid;
+    grid-template-areas: 'header header' 'menu canvas';
+    grid-template-rows: auto 1fr;
+    grid-template-columns: minmax(auto, 11em) 1fr;
+    gap: 10px;
+    background-color: #EEE;
+    padding: 0.2em;
+    height: 100%;
+  }
+  
+}

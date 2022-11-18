@@ -1,0 +1,148 @@
+<html>
+<head>
+  <title> [ Custom Filter ] </title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=no"/>
+  <meta property="og:url" content="https://victorribeiro.com/customFilter"/>
+  <meta property="og:type" content="article"/>
+  <meta property="og:title" content="VictorRibeiro.com"/>
+  <meta property="og:author" content="Victor Ribeiro"/>
+  <meta property="og:description" content="Photo editor that runs on the browser"/>
+  <meta property="og:image" content="https://victorribeiro.com/customFilter/screenshot.jpg"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="612"/>
+  <link rel="stylesheet" href="css/main.css" type="text/css"/>
+  <link rel="icon" type="image/x-icon" href="favicon.png"/>
+  <link rel="icon" type="image/png" href="favicon.png"/>
+</head>
+<body>
+
+<div class="grid-container">
+  <div id="header">
+    <div id="new-area">
+      <button id="toggle-menu" title="Toggle menu"><</button>
+      <input type="number" id="width" placeholder="width" value="800"/>
+      <input type="number" id="height" placeholder="height" value="600"/>
+      <button id="new-image">New</button>
+    </div>
+    <div id="load-area">
+      <input id="img-size" type="number" placeholder="size" value="1" step="0.1" title="Image size"/>
+      <input type="file"/>
+      <button id="load-img">Load</button>
+      <button id="save-img">Save</button>
+    </div>
+    <div id="status"></div>
+  </div>
+  <div id="menu">
+    <div class="accordion movable">
+      <div data-collapsed="1"><span>-</span> Paint</div><div id="color-area">
+        <div id="color">
+          <div id="dropper" class="tool"></div>
+          <div id="sliders">
+            <label>
+              <output></output><input type="range" id="r" min="0" max="255" step="1" value="0"/>
+            </label>
+            <label>
+              <output></output><input type="range" id="g" min="0" max="255" step="1" value="0"/>
+            </label>
+            <label>
+              <output></output><input type="range" id="b" min="0" max="255" step="1" value="0"/>
+            </label>
+          </div>
+        </div>
+        <div id="paint-area">
+          <label>
+            <output></output><input type="range" id="opacity" min="0" max="1" step="0.1" value="0.5"/>
+          </label>
+          <label>
+            <output></output><input type="range" id="brush-size" min="1" max="100" step="1" value="30"/>
+          </label>
+          <button id="drag" class="tool icon" title="Drag">&#9758;</button>
+          <button id="brush" class="tool icon" title="Brush">&#9679;</button>
+          <button id="eraser" class="tool icon" title="Eraser">&#9678;</button>
+          <button id="bucket" class="tool icon" title="Bucket">&#9677;</button>
+          <button id="rect" class="tool icon" title="Rect">&#9723;</button>
+          <button id="circle" class="tool icon" title="Circle">&#9711;</button>
+          <button id="line" class="tool icon" title="Line">&#9472;</button>
+          <button id="clone" class="tool icon" title="Clone">&#9986;</button>
+        </div>
+      </div>
+    </div>
+    <div class="accordion">
+      <div data-collapsed="1"><span>-</span> Transform</div><div id="transform-area">
+        <div id="filter-buttons">
+          <button id="flipx" title="Flip X" class="icon">&#9680;</button>
+          <button id="flipy" title="Flip Y" class="icon">&#9683;</button>
+          <button id="rotatel" title="Rotation -" class="icon">&#8634;</button>
+          <button id="rotater" title="Rotation +" class="icon">&#8635;</button>
+          <button id="crop" title="Crop" class="tool icon">Crop</button>
+          <button id="crop-ok" class="icon" disabled>Ok</button>
+        </div>
+      </div>
+    </div>
+    <div class="accordion">
+      <div><span>-</span> Filter</div><div id="filter-area">
+        <input type="number" id="size" value="9"/>
+        <div id="filter"></div>
+        <div id="filter-buttons">
+          <button id="random" title="Random" class="icon">&#9860;</button>
+          <button id="zero" title="Zeros" class="icon">&#8709;</button>
+          <button id="run" title="Run filter" class="icon">&#9654;</button>
+        </div>
+      </div>
+    </div>
+    <div class="accordion">
+      <div data-collapsed="1"><span>-</span> Adjust</div><div id="adjust-area">
+        <button id="desat">Color -</button>
+        <button id="sat">Color +</button>
+        <button id="gray">Gray</button>
+        <button id="contrast">Contrast</button>
+        <select id="method">
+          <option value="median">Median</option>
+          <option value="mean">Mean</option>
+          <option value="mode">Mode</option>
+        </select>
+        <button id="denoise">Denoise</button>
+      </div>
+    </div>
+    <div class="accordion">
+      <div data-collapsed="1"><span>-</span> Animation</div><div id="animation-area">
+        <input id="delay" type="number" value="1000" title="Time between frames"/>
+        <button id="play">Play</button>
+        <input id="long" type="number" value="1000" title="Video duration"/>
+        <button id="export-video">Export</button>
+      </div>
+    </div>
+    <div class="accordion">
+      <div><span>-</span> Blend</div><div id="blend-area">
+        <input type="text" id="formula" value="i1 + i2" spellcheck="false"/>
+        <button id="blend" title="Blend" class="icon">&#8721;</button>
+      </div>
+    </div>
+    <div class="accordion">
+      <div><span>-</span> Stack</div><div id="stack-area">
+        <div>
+          <button id="del-stack" title="Remove from stack" class="icon">-</button>
+          <button id="update-current" title="Update current" class="icon">&#9667;</button>
+          <button id="add-stack" title="Add to stack" class="icon">+</button>
+        </div>
+        <div id="stack"></div>
+      </div>
+    </div>
+  </div>
+  <div id="canvas-area">
+    <div id="canvas-tools">
+      <label>
+        <output></output><input type="range" id="canvas-size" value="1" min="1" max="10" step="0.1"/>
+      </label>
+      <label>
+        <output></output><input type="range" id="canvas-opacity" value="100" min="1" max="100" step="1"/>
+      </label>
+    </div>
+    <div id="canvas-bg"><canvas id="bg"></canvas><canvas id="fg"></canvas></div>
+  </div>
+</div>
+
+<script src="js/main.js" type="module"></script>
+</body>
+</html>
