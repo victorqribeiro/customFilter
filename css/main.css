@@ -14,11 +14,11 @@
   overflow: auto;
 }
 
-#header > div {
+#header>div {
   display: flex;
 }
 
-#header > div > * {
+#header>div>* {
   margin-right: 0.5em;
 }
 
@@ -32,7 +32,7 @@
   overflow: auto;
 }
 
-#menu > * {
+#menu>* {
   margin: 0.5em;
 }
 
@@ -52,7 +52,7 @@
   padding: 0;
 }
 
-#new-area > input[type='number']::placeholder {
+#new-area>input[type='number']::placeholder {
   top: 1em;
 }
 
@@ -63,7 +63,8 @@
   justify-content: center;
 }
 
-#new-area input[type="number"], #animation-area input[type="number"] {
+#new-area input[type="number"],
+#animation-area input[type="number"] {
   min-width: 4.5em;
 }
 
@@ -76,7 +77,8 @@
   margin: 0.1em;
 }
 
-#filter-area button, #stack-area button {
+#filter-area button,
+#stack-area button {
   min-width: 3em;
   margin: 0.1em;
 }
@@ -91,7 +93,9 @@
   flex-direction: row;
 }
 
-#adjust-area button, #adjust-area select, #animation-area button {
+#adjust-area button,
+#adjust-area select,
+#animation-area button {
   min-width: 6em;
   margin: 0.1em;
 }
@@ -103,9 +107,9 @@
   justify-content: space-around;
 }
 
-#color > #sliders {
+#color>#sliders {
   display: flex;
-  flex-direction: column; 
+  flex-direction: column;
 }
 
 #dropper {
@@ -144,24 +148,24 @@ canvas {
   border: solid 1px red;
 }
 
-.accordion > div:first-child {
+.accordion>div:first-child {
   text-align: left;
   cursor: pointer;
 }
 
-.accordion > div:first-child {
+.accordion>div:first-child {
   font-size: 1em;
 }
 
-.accordion > div:first-child > span:first-child::before {
+.accordion>div:first-child>span:first-child::before {
   content: '[';
 }
 
-.accordion > div:first-child > span:first-child::after {
+.accordion>div:first-child>span:first-child::after {
   content: ']';
 }
 
-.accordion > div:last-child {
+.accordion>div:last-child {
   border: 1px solid rgba(0, 0, 0, 0.2);
   padding: 0.2em;
 }
@@ -188,7 +192,8 @@ input[type="number"] {
   text-align: center;
 }
 
-input[type="text"], select {
+input[type="text"],
+select {
   font-size: 1.2em;
   padding: 0.5em;
   min-width: 6em;
@@ -227,5 +232,5 @@ input[type="range"] {
     padding: 0.2em;
     height: 100%;
   }
-  
+
 }

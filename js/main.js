@@ -1,8 +1,8 @@
 import RawImageData from './RawImageData.js'
-import {$, $all, getRandom, URL, TWOPI} from './utils.js'
+import { $, $all, getRandom, URL, TWOPI } from './utils.js'
 
-const worker = new Worker('./js/convolution.js', {type: 'module'})
-worker.onmessage = function(e) {
+const worker = new Worker('./js/convolution.js', { type: 'module' })
+worker.onmessage = function (e) {
   tmp_filtered = null
   switch (e.data.constructor) {
     case ImageData:
@@ -22,14 +22,14 @@ const mouse = {
   isDown: false,
   rIsDown: false,
   ctrlIsDown: false,
-  pos: {x: 0, y: 0},
-  screenPosOld: {x: 0, y: 0},
-  screenPos: {x: 0, y: 0}
+  pos: { x: 0, y: 0 },
+  screenPosOld: { x: 0, y: 0 },
+  screenPos: { x: 0, y: 0 }
 }
 
 const tools = {
   current: null,
-  preview: function() {
+  preview: function () {
     const size = parseInt($('#brush-size').value)
     cfg.clearRect(0, 0, fg.width, fg.height)
     cfg.beginPath()
@@ -38,22 +38,22 @@ const tools = {
     cfg.stroke()
     return size
   },
-  update: function() {
+  update: function () {
     stack[pointer] = c.getImageData(0, 0, canvas.width, canvas.height)
     $all('#stack img')[pointer].src = canvas.toDataURL()
   },
   drag: {
-    actionIn: function() {
+    actionIn: function () {
       if (!mouse.isDown) return
-      const deltaPos = {x: mouse.screenPosOld.x - mouse.screenPos.x, y: mouse.screenPosOld.y - mouse.screenPos.y}
+      const deltaPos = { x: mouse.screenPosOld.x - mouse.screenPos.x, y: mouse.screenPosOld.y - mouse.screenPos.y }
       $('#canvas-area').scrollBy(deltaPos.x, deltaPos.y)
     }
   },
   brush: {
-    preview: function() {
+    preview: function () {
       return tools.preview()
     },
-    actionIn: function() {
+    actionIn: function () {
       const size = this.preview()
       if (!mouse.isDown) return
       const r = $('#r').value
@@ -68,18 +68,18 @@ const tools = {
       c.fillStyle = grd
       c.fill()
     },
-    actionOut: function() {
+    actionOut: function () {
       tools.update()
     },
-    reset: function() {
+    reset: function () {
       cfg.clearRect(0, 0, fg.width, fg.height)
     }
   },
   eraser: {
-    preview: function() {
+    preview: function () {
       return tools.preview()
     },
-    actionIn: function() {
+    actionIn: function () {
       const r = this.preview()
       if (!mouse.isDown) return
       const a = parseFloat($('#opacity').value)
@@ -91,12 +91,12 @@ const tools = {
       c.fillStyle = grd
       c.fill()
     },
-    actionOut: function() {
+    actionOut: function () {
       tools.update()
     }
   },
   dropper: {
-    actionIn: function() {
+    actionIn: function () {
       if (!mouse.isDown) return
       const img = c.getImageData(mouse.pos.x, mouse.pos.y, 1, 1)
       const r = $('#r')
@@ -113,7 +113,7 @@ const tools = {
   },
   circle: {
     start: null,
-    preview: function() {
+    preview: function () {
       const dx = mouse.pos.x - this.start.x
       const dy = mouse.pos.y - this.start.y
       const px = mouse.pos.x - dx / 2
@@ -125,16 +125,16 @@ const tools = {
       cfg.ellipse(px, py, w, h, 0, 0, TWOPI)
       cfg.strokeStyle = 'black'
       cfg.stroke()
-      return {px, py, w, h}
+      return { px, py, w, h }
     },
-    actionIn: function() {
+    actionIn: function () {
       if (!mouse.isDown || !this.start)
-        return this.start = {x: mouse.pos.x, y: mouse.pos.y}
+        return this.start = { x: mouse.pos.x, y: mouse.pos.y }
       this.preview()
     },
-    actionOut: function() {
+    actionOut: function () {
       if (!this.start) return
-      const {px, py, w, h} = this.preview()
+      const { px, py, w, h } = this.preview()
       c.beginPath()
       c.ellipse(px, py, w, h, 0, 0, TWOPI)
       const r = $('#r').value
@@ -150,22 +150,22 @@ const tools = {
   },
   rect: {
     start: null,
-    preview: function() {
+    preview: function () {
       const dx = mouse.pos.x - this.start.x
       const dy = mouse.pos.y - this.start.y
       cfg.clearRect(0, 0, fg.width, fg.height)
       cfg.strokeStyle = "black"
       cfg.strokeRect(this.start.x, this.start.y, dx, dy)
-      return {dx, dy}
+      return { dx, dy }
     },
-    actionIn: function() {
+    actionIn: function () {
       if (!mouse.isDown || !this.start)
-        return this.start = {x: mouse.pos.x, y: mouse.pos.y}
+        return this.start = { x: mouse.pos.x, y: mouse.pos.y }
       this.preview()
     },
-    actionOut: function() {
+    actionOut: function () {
       if (!this.start) return
-      const {dx, dy} = this.preview()
+      const { dx, dy } = this.preview()
       c.beginPath()
       const r = $('#r').value
       const g = $('#g').value
@@ -180,7 +180,7 @@ const tools = {
   },
   line: {
     start: null,
-    preview: function() {
+    preview: function () {
       cfg.clearRect(0, 0, fg.width, fg.height)
       cfg.beginPath()
       cfg.moveTo(this.start.x, this.start.y)
@@ -189,13 +189,13 @@ const tools = {
       cfg.strokeStyle = "black"
       cfg.stroke()
     },
-    actionIn: function() {
+    actionIn: function () {
       if (!mouse.isDown) return
       if (!this.start)
-        this.start = {x: mouse.pos.x, y: mouse.pos.y}
+        this.start = { x: mouse.pos.x, y: mouse.pos.y }
       this.preview()
     },
-    actionOut: function() {
+    actionOut: function () {
       if (!this.start) return
       c.beginPath()
       c.moveTo(this.start.x, this.start.y)
@@ -213,7 +213,7 @@ const tools = {
     },
   },
   bucket: {
-    actionIn: function() {
+    actionIn: function () {
       if (!mouse.isDown && !busy) return
       const r = $('#r').value
       const g = $('#g').value
@@ -226,7 +226,7 @@ const tools = {
     target: null,
     targetPos: null,
     lastOne: null,
-    preview: function() {
+    preview: function () {
       const size = tools.preview()
       const halfsize = size / 2
       if (this.targetPos) {
@@ -242,10 +242,10 @@ const tools = {
       }
       return size
     },
-    actionIn: function() {
+    actionIn: function () {
       const size = this.preview()
       if (mouse.isDown && mouse.ctrlIsDown) {
-        this.targetPos = {x: mouse.pos.x, y: mouse.pos.y}
+        this.targetPos = { x: mouse.pos.x, y: mouse.pos.y }
         const size = parseInt($('#brush-size').value) * 2
         const img = c.getImageData(this.targetPos.x - size / 2, this.targetPos.y - size / 2, size, size)
         const tmpcanvas = document.createElement('canvas')
@@ -269,13 +269,13 @@ const tools = {
       c.drawImage(this.target, mouse.pos.x - this.target.width / 2, mouse.pos.y - this.target.height / 2)
       c.globalAlpha = 1
       c.restore()
-      this.lastOne = {x: mouse.pos.x, y: mouse.pos.y}
+      this.lastOne = { x: mouse.pos.x, y: mouse.pos.y }
     },
-    actionOut: function() {
+    actionOut: function () {
       this.lastOne = null
       tools.update()
     },
-    reset: function() {
+    reset: function () {
       this.target = null
       this.targetPos = null
       this.lastOne = null
@@ -284,7 +284,7 @@ const tools = {
   crop: {
     start: null,
     end: null,
-    preview: function() {
+    preview: function () {
       const dx = mouse.pos.x - this.start.x
       const dy = mouse.pos.y - this.start.y
       cfg.clearRect(0, 0, fg.width, fg.height)
@@ -292,19 +292,19 @@ const tools = {
       cfg.strokeStyle = "black"
       cfg.strokeRect(this.start.x, this.start.y, dx, dy)
       cfg.setLineDash([])
-      return {dx, dy}
+      return { dx, dy }
     },
-    actionIn: function() {
+    actionIn: function () {
       if (!mouse.isDown) return
       if (this.start && this.end) this.start = this.end = null
-      if (!this.start) this.start = {x: mouse.pos.x, y: mouse.pos.y}
+      if (!this.start) this.start = { x: mouse.pos.x, y: mouse.pos.y }
       this.preview()
     },
-    actionOut: function() {
-      this.end = {x: mouse.pos.x, y: mouse.pos.y}
+    actionOut: function () {
+      this.end = { x: mouse.pos.x, y: mouse.pos.y }
       $('#crop-ok').disabled = false
     },
-    reset: function() {
+    reset: function () {
       this.start = null
       this.end = null
       cfg.clearRect(0, 0, fg.width, fg.height)
@@ -323,36 +323,36 @@ const stack = []
 const canvas = $('#bg')
 const fg = $('#fg')
 const blank = canvas.toDataURL()
-const c = canvas.getContext('2d', {willReadFrequently: true})
+const c = canvas.getContext('2d', { willReadFrequently: true })
 const cfg = fg.getContext('2d')
 
-const getPos = function(e) {
-	if (e.cancelable)
-	  e.preventDefault();
-	let x, y
-	let rect = canvas.getBoundingClientRect()
-	const _x = canvas.width / rect.width
-	const _y = canvas.height / rect.height
-	let ax, ay
-	if (e.touches) {
-		ax = e.targetTouches[0].pageX
-		ay = e.targetTouches[0].pageY
-		x = Math.round((ax - rect.left) * _x)
-		y = Math.round((ay - rect.top) * _y)
-	} else {
-	  ax = e.clientX 
-	  ay = e.clientY
-		x = e.offsetX * _x
-		y = e.offsetY * _y
-	}
-	return {x, y, ax, ay}
+const getPos = function (e) {
+  if (e.cancelable)
+    e.preventDefault();
+  let x, y
+  let rect = canvas.getBoundingClientRect()
+  const _x = canvas.width / rect.width
+  const _y = canvas.height / rect.height
+  let ax, ay
+  if (e.touches) {
+    ax = e.targetTouches[0].pageX
+    ay = e.targetTouches[0].pageY
+    x = Math.round((ax - rect.left) * _x)
+    y = Math.round((ay - rect.top) * _y)
+  } else {
+    ax = e.clientX
+    ay = e.clientY
+    x = e.offsetX * _x
+    y = e.offsetY * _y
+  }
+  return { x, y, ax, ay }
 }
 
-fg.onmousedown = function(e) {
+fg.onmousedown = function (e) {
   mouse.isDown = e.touches || e.button == 0
   mouse.rIsDown = e.button == 2
   mouse.ctrlIsDown = e.ctrlKey
-  const {x, y, ax, ay} = getPos(e)
+  const { x, y, ax, ay } = getPos(e)
   mouse.pos.x = x
   mouse.pos.y = y
   mouse.screenPos.x = ax
@@ -365,7 +365,7 @@ fg.onmousedown = function(e) {
   showImage()
 }
 
-fg.onmouseup = function(e) {
+fg.onmouseup = function (e) {
   if (e.touches) {
     mouse.isDown = false
     mouse.rIsDown = false
@@ -373,15 +373,15 @@ fg.onmouseup = function(e) {
     mouse.isDown = e.button != 0
     mouse.rIsDown = e.button != 2
   }
-  if (tools.current) 
+  if (tools.current)
     return tools.current.actionOut && tools.current.actionOut()
 
   showImage(tmp)
   tmp = undefined
 }
 
-fg.onmousemove = function(e) {
-  const {x, y, ax, ay} = getPos(e)
+fg.onmousemove = function (e) {
+  const { x, y, ax, ay } = getPos(e)
   mouse.screenPos.x = ax
   mouse.screenPos.y = ay
   tools.current && tools.current.actionIn()
@@ -391,7 +391,7 @@ fg.onmousemove = function(e) {
   mouse.screenPosOld.y = mouse.screenPos.y
 }
 
-fg.onmouseout = function(e) {
+fg.onmouseout = function (e) {
   mouse.isDown = false
   mouse.rIsDown = false
 }
@@ -423,10 +423,10 @@ const initFilter = () => {
 
 const loadImage = async (src, size = 1) => new Promise((resolve, reject) => {
   const image = new Image()
-  image.onload = function() {
+  image.onload = function () {
     updateCanvasSize(this.width * size, this.height * size)
     c.drawImage(this, 0, 0, canvas.width, canvas.height)
-    resolve({src: image.src, data: c.getImageData(0, 0, canvas.width, canvas.height)})
+    resolve({ src: image.src, data: c.getImageData(0, 0, canvas.width, canvas.height) })
   }
   image.onerror = () => reject('error')
   image.src = URL.createObjectURL(src)
@@ -477,15 +477,15 @@ const addToStack = (src, data, update = false) => {
   preview.width = 150
   if (data instanceof RawImageData) {
     preview.className = 'raw'
-    preview.title = 'Raw data' 
+    preview.title = 'Raw data'
   }
-  preview.onclick = function() {
+  preview.onclick = function () {
     tmp_filtered = null
     changeTool()
     pointer = parseInt(this.id)
     showImage()
   }
-  preview.ondblclick = function() {
+  preview.ondblclick = function () {
     const canvasBg = $('#canvas-bg')
     if (canvasBg.dataset.bg == this.src) {
       canvasBg.style.background = ''
@@ -506,7 +506,7 @@ const loadImageIntoStack = async () => {
   disabled(true)
   const fileInput = $('input[type=file]')
   if (!fileInput.files.length) return disabled(false)
-  const {src, data} = await loadImage(fileInput.files[0], parseFloat($('#img-size').value))
+  const { src, data } = await loadImage(fileInput.files[0], parseFloat($('#img-size').value))
   addToStack(src, data)
   tmp_filtered = null
   disabled(false)
@@ -534,7 +534,7 @@ const combine = () => {
   const formula = $('#formula').value
   if (!stack.length || !formula) return
   disabled(true)
-  const {width, height} = canvas
+  const { width, height } = canvas
   worker.postMessage(['combine', width, height, stack, formula])
 }
 
@@ -542,7 +542,7 @@ const getImageData = () => tmp_filtered || c.getImageData(0, 0, canvas.width, ca
 
 const contrast = () => {
   disabled(true)
-	worker.postMessage(['contrast', getImageData()])
+  worker.postMessage(['contrast', getImageData()])
 }
 
 const gray = () => {
@@ -570,7 +570,7 @@ const anim = {
   current: 0,
   u: null,
   lastTime: 0,
-  reset: function() {
+  reset: function () {
     this.u && window.cancelAnimationFrame(this.u)
     this.playing = false
     this.current = 0
@@ -591,7 +591,7 @@ const animate = (time) => {
 }
 
 const animation = () => {
-  if(!stack.length) return
+  if (!stack.length) return
   if (anim.playing) {
     anim.reset()
     $('#play').innerText = "Play"
@@ -607,7 +607,7 @@ const flip = (x, y) => {
   if (cimg == blank) return
   const img = new Image()
   img.src = cimg
-  img.onload = function() {
+  img.onload = function () {
     c.save()
     c.scale(x, y)
     c.drawImage(this, x < 0 ? -this.width : 0, y < 0 ? -this.height : 0)
@@ -620,7 +620,7 @@ const rotate = (dir = 1) => {
   if (cimg == blank) return
   const img = new Image()
   img.src = cimg
-  img.onload = function() {
+  img.onload = function () {
     updateCanvasSize(this.height, this.width)
     c.save()
     c.rotate(dir * Math.PI / 2)
@@ -690,7 +690,7 @@ const changeColor = () => {
 }
 
 const changeCanvasSize = () => {
-  const {width, height} = canvas
+  const { width, height } = canvas
   const canvasBg = $('#canvas-bg')
   const size = parseFloat($('#canvas-size').value)
   canvas.style.width = fg.style.width = canvasBg.style.width = width * size + 'px'
@@ -717,15 +717,15 @@ const exportVideo = () => {
   const stream = canvas.captureStream(30)
   const recordedChunks = []
   const mediaRecorder = new MediaRecorder(stream, {
-    audioBitsPerSecond : 0,
-    videoBitsPerSecond : 5000000,
+    audioBitsPerSecond: 0,
+    videoBitsPerSecond: 5000000,
     mimeType: 'video/webm;codecs=vp9'
   })
   mediaRecorder.ondataavailable = (event) => {
-    event.data.size  && recordedChunks.push(event.data)
+    event.data.size && recordedChunks.push(event.data)
   }
   mediaRecorder.onstop = () => {
-    const url = URL.createObjectURL(new Blob(recordedChunks, {type: 'video/VP9'}))
+    const url = URL.createObjectURL(new Blob(recordedChunks, { type: 'video/VP9' }))
     saveFile(url, 'vid.webm')
     window.URL.revokeObjectURL(url)
   }
@@ -740,7 +740,7 @@ const exportVideo = () => {
 
 const crop = () => {
   if (tools.current !== tools.crop) return
-  const {start, end} = tools.current
+  const { start, end } = tools.current
   if (!start || !end) return
   const img = c.getImageData(start.x, start.y, end.x - start.x, end.y - start.y)
   updateCanvasSize(img.width, img.height)
@@ -750,7 +750,7 @@ const crop = () => {
 
 $('input[type="file"]').addEventListener('change', () => loadImageIntoStack())
 
-$('input[type="file"]').addEventListener('click', function(){ this.value = null })
+$('input[type="file"]').addEventListener('click', function () { this.value = null })
 
 $('#load-img').addEventListener('click', () => $('input[type="file"]').click())
 
@@ -780,7 +780,7 @@ $('#desat').addEventListener('click', () => saturation(-1))
 
 $('#denoise').addEventListener('click', () => removeNoise())
 
-$('#formula').addEventListener('focus', function(){ this.selectionStart = this.selectionEnd = this.value.length })
+$('#formula').addEventListener('focus', function () { this.selectionStart = this.selectionEnd = this.value.length })
 
 $('#new-image').addEventListener('click', () => createNewImage())
 
@@ -806,10 +806,10 @@ $('#export-video').addEventListener('click', () => exportVideo())
 
 $('#crop-ok').addEventListener('click', () => crop())
 
-$all('.tool').forEach(t => t.addEventListener('click', function(){ changeTool(this.id) }))
+$all('.tool').forEach(t => t.addEventListener('click', function () { changeTool(this.id) }))
 
 $all('input[type="range"]').forEach(r => {
-  r.oninput = function() {
+  r.oninput = function () {
     this.previousSibling.value = this.value
   }
   r.oninput()
@@ -823,7 +823,7 @@ function collapse(e) {
   const ns = this.nextSibling
   if (!this.dataset.display)
     this.dataset.display = getComputedStyle(ns).display
-  if ( ns.style.display != 'none') {
+  if (ns.style.display != 'none') {
     ns.style.display = 'none'
     this.firstChild.innerText = '+'
     this.style.borderBottom = '1px solid rgba(0, 0, 0, 0.2)'
