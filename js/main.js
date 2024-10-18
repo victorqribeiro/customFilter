@@ -374,7 +374,9 @@ fg.onmouseup = function (e) {
     mouse.rIsDown = e.button != 2
   }
   if (tools.current)
-    return tools.current.actionOut && tools.current.actionOut()
+    tools.current.actionOut && tools.current.actionOut()
+    $('canvas').style.pointerEvents = 'none'
+    return
 
   showImage(tmp)
   tmp = undefined
@@ -384,7 +386,10 @@ fg.onmousemove = function (e) {
   const { x, y, ax, ay } = getPos(e)
   mouse.screenPos.x = ax
   mouse.screenPos.y = ay
-  tools.current && tools.current.actionIn()
+  if (tools.current) {
+    $('canvas').style.pointerEvents = 'all'
+    tools.current.actionIn()
+  }
   mouse.pos.x = x
   mouse.pos.y = y
   mouse.screenPosOld.x = mouse.screenPos.x
@@ -820,7 +825,7 @@ $all('#color input[type="range"], #opacity').forEach(r => r.addEventListener('in
 function collapse(e) {
   if (e.target.tagName == 'BUTTON')
     return
-  const ns = this.nextSibling
+  const ns = this.nextSibling.nextSibling
   if (!this.dataset.display)
     this.dataset.display = getComputedStyle(ns).display
   if (ns.style.display != 'none') {
