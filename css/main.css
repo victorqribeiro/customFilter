@@ -234,3 +234,21 @@ input[type="range"] {
   }
 
 }
+
+@media (pointer: coarse), (hover: none) {
+  .selected[title] {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+  }
+  .selected[title]:after {
+    content: attr(title);
+    position: absolute;
+    top: 0%;
+    color: #000;
+    background-color: #fff;
+    border: 1px solid;
+    width: fit-content;
+    padding: 3px;
+  }
+}
