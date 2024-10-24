@@ -109,6 +109,18 @@
             <option value="mode">Mode</option>
           </select>
           <button id="denoise">Denoise</button>
+          <div id="sliders">
+            <label title="size">
+              <output></output><input type="range" id="win-size" min="0" max="15" step="1" value="5" />
+            </label>
+            <label title="color">
+              <output></output><input type="range" id="sig-color" min="0" max="100" step="1" value="20" />
+            </label>
+            <label title="space">
+              <output></output><input type="range" id="sig-space" min="0" max="100" step="1" value="10" />
+            </label>
+          </div>
+          <button id="billinear">Billinear</button>
         </div>
       </div>
       <div class="accordion">

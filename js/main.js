@@ -570,6 +570,11 @@ const removeNoise = () => {
   worker.postMessage(['removeNoise', getImageData(), $('#method').value, parseInt($('#size').value)])
 }
 
+const billinear = () => {
+  disabled(true)
+  worker.postMessage(['billinear', getImageData(), $('#win-size').value, $('#sig-color').value, $('#sig-space').value])
+}
+
 const anim = {
   playing: false,
   current: 0,
@@ -784,6 +789,8 @@ $('#sat').addEventListener('click', () => saturation())
 $('#desat').addEventListener('click', () => saturation(-1))
 
 $('#denoise').addEventListener('click', () => removeNoise())
+
+$('#billinear').addEventListener('click', () => billinear())
 
 $('#formula').addEventListener('focus', function () { this.selectionStart = this.selectionEnd = this.value.length })
 

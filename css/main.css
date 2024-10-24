@@ -107,9 +107,15 @@
   justify-content: space-around;
 }
 
-#color>#sliders {
+#color > #sliders {
   display: flex;
   flex-direction: column;
+}
+
+#adjust-area > #sliders {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1em;
 }
 
 #dropper {
@@ -218,6 +224,10 @@ input[type="range"] {
   height: 2em;
   width: 9em;
   margin-top: 0.8em;
+}
+
+#billinear_value {
+  min-width: 4em;
 }
 
 @media only screen and (max-width: 600px) {
