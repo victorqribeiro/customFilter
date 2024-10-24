@@ -254,6 +254,46 @@ class Processing {
     }
     return result
   }
+
+  static billinear(img, filterWidth = 5, sigmaColor = 20, sigmaSpace = 10) {
+    const colorFactor = 2 * sigmaColor * sigmaColor
+    const spaceFactor = 2 * sigmaSpace * sigmaSpace
+    const final = new RawImageData(img.width, img.height)
+    const halfWidth = Math.floor(filterWidth / 2)
+    for (let i = 0; i < img.data.length; i += 4) {
+      const { x, y } = this.getPosFromIndex(i, img.width)
+      const cp1 = img.data[i]
+      const cp2 = img.data[i + 1]
+      const cp3 = img.data[i + 2]
+      let totalWeight = 0
+      let sumR = 0, sumG = 0, sumB = 0
+      for (let j = 0; j < filterWidth * filterWidth; j += 1) {
+        const xFilter = (j % filterWidth) - halfWidth
+        const yFilter = Math.floor(j / filterWidth) - halfWidth
+        if (
+          xFilter + x < 0 || xFilter + x >= img.width ||
+          yFilter + y < 0 || yFilter + y >= img.height
+        ) continue
+        const spaceDist = (xFilter * xFilter + yFilter * yFilter) / spaceFactor
+        const index = ((xFilter + x) + (yFilter + y) * img.width) * 4
+        const np1 = img.data[index]
+        const np2 = img.data[index + 1]
+        const np3 = img.data[index + 2]
+        const colorDist = ((cp1 - np1) ** 2 + (cp2 - np2) ** 2 + (cp3 - np3) ** 2) / colorFactor
+        const weight = Math.exp(-(spaceDist + colorDist))
+        sumR += np1 * weight
+        sumG += np2 * weight
+        sumB += np3 * weight
+        totalWeight += weight
+      }
+
+      final.data[i] = sumR / totalWeight
+      final.data[i + 1] = sumG / totalWeight
+      final.data[i + 2] = sumB / totalWeight
+      final.data[i + 3] = 255
+    }
+    return final
+  }
 }
 
 onmessage = e => {
