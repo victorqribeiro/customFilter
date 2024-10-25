@@ -41,6 +41,36 @@ class Processing {
     return final
   }
 
+  static darn(img, x0, y0, x1, y1) {
+    const { width: w, height: h } = img
+    for (var i = y0; i <= y1; i++) {
+      const ki0 = (y0 == 0) ? 0 : 1 / (i - (y0 - 1))
+      const ki1 = (y1 == h - 1) ? 0 : 1 / (y1 + 1 - i)
+      for (var j = x0; j <= x1; j++) {
+        const kj0 = (x0 == 0) ? 0 : 1 / (j - (x0 - 1))
+        const kj1 = (x1 == w - 1) ? 0 : 1 / (x1 + 1 - j)
+        var color = [0, 0, 0]
+        const indexI0 = (j + (y0 - 1) * w) * 4
+        const indexI1 = (j + (y1 + 1) * w) * 4
+        const indexJ0 = ((x0 - 1) + i * w) * 4
+        const indexJ1 = ((x1 + 1) + i * w) * 4
+        const d = ki0 + ki1 + kj0 + kj1
+        for (var k = 0; k < 3; k++) {
+          const pi0 = (y0 == 0) ? 0 : img.data[indexI0 + k]
+          const pi1 = (y1 == h - 1) ? 0 : img.data[indexI1 + k]
+          const pj0 = (x0 == 0) ? 0 : img.data[indexJ0 + k]
+          const pj1 = (x1 == w - 1) ? 0 : img.data[indexJ1 + k]
+          color[k] = (pi0 * ki0 + pi1 * ki1 + pj0 * kj0 + pj1 * kj1) / d
+        }
+        const index = (j + i * w) * 4
+        img.data[index] = color[0]
+        img.data[index + 1] = color[1]
+        img.data[index + 2] = color[2]
+      }
+    }
+    return img
+  }
+
   static combine(width, height, stack, formula) {
     try {
       const func = Function(stack.map((_, i) => `i${i + 1}`).join(','), `return ${formula}`)
