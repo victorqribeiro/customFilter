@@ -331,6 +331,8 @@ const blank = canvas.toDataURL()
 const c = canvas.getContext('2d', { willReadFrequently: true })
 const cfg = fg.getContext('2d')
 
+$all('canvas').forEach(c => c.style.pointerEvents = 'none')
+
 const getPos = function (e) {
   if (e.cancelable)
     e.preventDefault();
@@ -380,9 +382,6 @@ fg.onmouseup = function (e) {
   }
   if (tools.current)
     tools.current.actionOut && tools.current.actionOut()
-  $('canvas').style.pointerEvents = 'none'
-  return
-
   showImage(tmp)
   tmp = undefined
 }
@@ -391,10 +390,8 @@ fg.onmousemove = function (e) {
   const { x, y, ax, ay } = getPos(e)
   mouse.screenPos.x = ax
   mouse.screenPos.y = ay
-  if (tools.current) {
-    $('canvas').style.pointerEvents = 'all'
+  if (tools.current)
     tools.current.actionIn()
-  }
   mouse.pos.x = x
   mouse.pos.y = y
   mouse.screenPosOld.x = mouse.screenPos.x
@@ -697,7 +694,12 @@ const changeTool = t => {
   tools.current && tools.current.reset && tools.current.reset()
   tools.current = t ? (tools.current === tools[t] ? undefined : tools[t]) : undefined
   $all('.tool').forEach(to => to.classList.remove('selected'))
-  if (tools.current) $(`#${t}`).classList.add('selected')
+  if (tools.current) {
+    $(`#${t}`).classList.add('selected')
+    $all('canvas').forEach(c => c.style.pointerEvents = 'all')
+  } else {
+    $all('canvas').forEach(c => c.style.pointerEvents = 'none')
+  }
 }
 
 const changeColor = () => {
