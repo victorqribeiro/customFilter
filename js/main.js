@@ -27,6 +27,39 @@ const mouse = {
   screenPos: { x: 0, y: 0 }
 }
 
+function toolWithSelection(id) {
+  return {
+    start: null,
+    end: null,
+    preview: function () {
+      const dx = mouse.pos.x - this.start.x
+      const dy = mouse.pos.y - this.start.y
+      cfg.clearRect(0, 0, fg.width, fg.height)
+      cfg.setLineDash([10, 10])
+      cfg.strokeStyle = "black"
+      cfg.strokeRect(this.start.x, this.start.y, dx, dy)
+      cfg.setLineDash([])
+      return { dx, dy }
+    },
+    actionIn: function () {
+      if (!mouse.isDown) return
+      if (this.start && this.end) this.start = this.end = null
+      if (!this.start) this.start = { x: mouse.pos.x, y: mouse.pos.y }
+      this.preview()
+    },
+    actionOut: function () {
+      this.end = { x: mouse.pos.x, y: mouse.pos.y }
+      $(id).disabled = false
+    },
+    reset: function () {
+      this.start = null
+      this.end = null
+      cfg.clearRect(0, 0, fg.width, fg.height)
+      $(id).disabled = true
+    }
+  }
+}
+
 const tools = {
   current: null,
   preview: function () {
@@ -281,36 +314,8 @@ const tools = {
       this.lastOne = null
     }
   },
-  crop: {
-    start: null,
-    end: null,
-    preview: function () {
-      const dx = mouse.pos.x - this.start.x
-      const dy = mouse.pos.y - this.start.y
-      cfg.clearRect(0, 0, fg.width, fg.height)
-      cfg.setLineDash([10, 10])
-      cfg.strokeStyle = "black"
-      cfg.strokeRect(this.start.x, this.start.y, dx, dy)
-      cfg.setLineDash([])
-      return { dx, dy }
-    },
-    actionIn: function () {
-      if (!mouse.isDown) return
-      if (this.start && this.end) this.start = this.end = null
-      if (!this.start) this.start = { x: mouse.pos.x, y: mouse.pos.y }
-      this.preview()
-    },
-    actionOut: function () {
-      this.end = { x: mouse.pos.x, y: mouse.pos.y }
-      $('#crop-ok').disabled = false
-    },
-    reset: function () {
-      this.start = null
-      this.end = null
-      cfg.clearRect(0, 0, fg.width, fg.height)
-      $('#crop-ok').disabled = true
-    }
-  }
+  crop: toolWithSelection('#crop-ok'),
+  darn: toolWithSelection('#darn-ok')
 }
 
 let busy = false
@@ -375,8 +380,8 @@ fg.onmouseup = function (e) {
   }
   if (tools.current)
     tools.current.actionOut && tools.current.actionOut()
-    $('canvas').style.pointerEvents = 'none'
-    return
+  $('canvas').style.pointerEvents = 'none'
+  return
 
   showImage(tmp)
   tmp = undefined
@@ -758,6 +763,16 @@ const crop = () => {
   changeTool()
 }
 
+const darn = () => {
+  if (tools.current !== tools.darn) return
+  const { start, end } = tools.current
+  if (!start || !end) return
+  const [x0, y0] = Object.values(start).map(x => Math.round(x))
+  const [x1, y1] = Object.values(end).map(x => Math.round(x))
+  disabled(true)
+  worker.postMessage(['darn', getImageData(), x0, y0, x1, y1])
+}
+
 $('input[type="file"]').addEventListener('change', () => loadImageIntoStack())
 
 $('input[type="file"]').addEventListener('click', function () { this.value = null })
@@ -817,6 +832,8 @@ $('#toggle-menu').addEventListener('click', () => toggleMenu())
 $('#export-video').addEventListener('click', () => exportVideo())
 
 $('#crop-ok').addEventListener('click', () => crop())
+
+$('#darn-ok').addEventListener('click', () => darn())
 
 $all('.tool').forEach(t => t.addEventListener('click', function () { changeTool(this.id) }))
 
