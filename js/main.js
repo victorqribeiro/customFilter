@@ -772,7 +772,7 @@ const darn = () => {
   const [x0, y0] = Object.values(start).map(x => Math.round(x))
   const [x1, y1] = Object.values(end).map(x => Math.round(x))
   disabled(true)
-  worker.postMessage(['darn', getImageData(), x0, y0, x1, y1])
+  worker.postMessage(['darn', getImageData(), Math.min(x0, x1), Math.min(y0, y1), Math.max(x0, x1), Math.max(y0, y1)])
 }
 
 $('input[type="file"]').addEventListener('change', () => loadImageIntoStack())
