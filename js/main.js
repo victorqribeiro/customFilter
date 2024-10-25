@@ -382,7 +382,7 @@ fg.onmouseup = function (e) {
   }
   if (tools.current)
     tools.current.actionOut && tools.current.actionOut()
-  showImage(tmp)
+  tmp && showImage(tmp)
   tmp = undefined
 }
 
