@@ -285,7 +285,7 @@ class Processing {
     return result
   }
 
-  static billinear(img, filterWidth = 5, sigmaColor = 20, sigmaSpace = 10) {
+  static bilateral(img, filterWidth = 5, sigmaColor = 20, sigmaSpace = 10) {
     const colorFactor = 2 * sigmaColor * sigmaColor
     const spaceFactor = 2 * sigmaSpace * sigmaSpace
     const final = new RawImageData(img.width, img.height)
