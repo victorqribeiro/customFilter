@@ -226,10 +226,6 @@ input[type="range"] {
   margin-top: 0.8em;
 }
 
-#billinear_value {
-  min-width: 4em;
-}
-
 @media only screen and (max-width: 600px) {
 
   .grid-container {

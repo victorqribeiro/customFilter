@@ -572,9 +572,9 @@ const removeNoise = () => {
   worker.postMessage(['removeNoise', getImageData(), $('#method').value, parseInt($('#size').value)])
 }
 
-const billinear = () => {
+const bilateral = () => {
   disabled(true)
-  worker.postMessage(['billinear', getImageData(), $('#win-size').value, $('#sig-color').value, $('#sig-space').value])
+  worker.postMessage(['bilateral', getImageData(), $('#win-size').value, $('#sig-color').value, $('#sig-space').value])
 }
 
 const anim = {
@@ -807,7 +807,7 @@ $('#desat').addEventListener('click', () => saturation(-1))
 
 $('#denoise').addEventListener('click', () => removeNoise())
 
-$('#billinear').addEventListener('click', () => billinear())
+$('#bilateral').addEventListener('click', () => bilateral())
 
 $('#formula').addEventListener('focus', function () { this.selectionStart = this.selectionEnd = this.value.length })
 
